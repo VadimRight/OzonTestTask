@@ -6,5 +6,5 @@ import (
 
 func main() {
 	cfg := bootstrap.LoadConfig()
-	bootstrap.InitPostgresDatabase(cfg)
+	_ = bootstrap.InitPostgresDatabase(cfg)
 }

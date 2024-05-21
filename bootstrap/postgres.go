@@ -7,7 +7,11 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func InitPostgresDatabase(cfg *Config)  {
+type Storage struct {
+	db *sql.DB
+}
+
+func InitPostgresDatabase(cfg *Config) *Storage  {
 	const op = "postgres.InitPostgresDatabase"
 
 	dbHost := cfg.Postgres.PostgresHost
@@ -16,11 +20,10 @@ func InitPostgresDatabase(cfg *Config)  {
 	dbPasswd := cfg.Postgres.PostgresPassword
 	dbName := cfg.Postgres.DatabaseName
 
-	postgresUrl := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s TimeZone=Asia/Tehran",
-		dbHost, dbPort, dbUser, dbPasswd, dbName)
+	postgresUrl := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",dbHost, dbPort, dbUser, dbPasswd, dbName)
 	db, err := sql.Open("postgres", postgresUrl)
 	if err != nil {
-		log.Fatalf("Error while connecting to postgres database: %v", err)	
+		log.Fatalf("%s: %v", op, err)
 	}
 	createDatabase, err := db.Prepare(`
 	CREATE TABLE IF NOT EXISTS "user" (
@@ -39,4 +42,5 @@ func InitPostgresDatabase(cfg *Config)  {
 		log.Fatalf("%s: %v", op, err)
 	}
 	defer db.Close()
+	return &Storage{db: db}
 }
