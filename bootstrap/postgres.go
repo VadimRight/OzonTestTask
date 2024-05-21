@@ -38,6 +38,9 @@ func InitPostgresDatabase(cfg *Config) *Storage  {
 	if err != nil {
 		log.Fatalf("%s: %v", op, err)
 	}
-	defer db.Close()
 	return &Storage{db: db}
+}
+
+func CloseDB(db *Storage) error {
+	return db.db.Close()
 }
