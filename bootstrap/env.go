@@ -29,15 +29,13 @@ type PostgresConfig struct {
 type ServerConfig struct {
 	ServerAddress string 
 	ServerPort string 
-	Timeout           time.Duration 
-	IdleTimeout       time.Duration 
 	RunMode string
 }
 
 func LoadConfig() *Config {
-	envConfig := LoadEnvConfig()
-	postgresConfig := LoadPostgresConfig()
-	serverConfig := LoadServerConfig()	
+	envConfig := loadEnvConfig()
+	postgresConfig := loadPostgresConfig()
+	serverConfig := loadServerConfig()	
 	return &Config {
 		Env: envConfig,
 		Postgres: postgresConfig,
@@ -45,7 +43,7 @@ func LoadConfig() *Config {
 	}	
 }
 
-func LoadEnvConfig() *EnvConfig {
+func loadEnvConfig() *EnvConfig {
 	const opt = "internal.config.LoadEnvConfig"
 	err := godotenv.Load()
 	if err != nil {
@@ -72,7 +70,7 @@ func LoadEnvConfig() *EnvConfig {
 	}
 }
 
-func LoadPostgresConfig() *PostgresConfig {
+func loadPostgresConfig() *PostgresConfig {
 	const opt = "internal.config.LoadPostgresConfig"
 	err := godotenv.Load()
 	if err != nil {
@@ -104,7 +102,7 @@ func LoadPostgresConfig() *PostgresConfig {
 	}
 }
 
-func LoadServerConfig() *ServerConfig {
+func loadServerConfig() *ServerConfig {
 	err := godotenv.Load()
 	const opt = "internal.config.LoadPostgresConfig"
 	if err != nil {
@@ -118,26 +116,12 @@ func LoadServerConfig() *ServerConfig {
 	serverAddr, ok := os.LookupEnv("SERVER_ADDR")
 	if !ok {log.Fatal("Can't read SERVER_ADDR")}
 	
-	timeout, ok := os.LookupEnv("TIMEOUT")
-	if !ok {log.Fatal("Can't read TIMEOUT")}
-	
-	timeoutTime, err := time.ParseDuration(timeout)
-	if err != nil {log.Fatalf("error while parsing timeout")}
-	
-	idleTimeout, ok := os.LookupEnv("IDLE_TIMEOUT")
-	if !ok {log.Fatal("Can't read IDLE_TIMEOUT")}
-	
-	idleTimeoutTime, err := time.ParseDuration(idleTimeout)
-	if err != nil {	log.Fatalf("error while parsing idle time")}
-	
 	serverRunMode, ok := os.LookupEnv("SERVER_RUN_MODE")
 	if !ok{	log.Fatalf("err while parsing run mode")}
 	
 	return &ServerConfig {
 		ServerAddress: serverAddr, 
 		ServerPort: serverPort,
-		Timeout: timeoutTime, 
-		IdleTimeout: idleTimeoutTime,  	
 		RunMode: serverRunMode,
 	}
 }
