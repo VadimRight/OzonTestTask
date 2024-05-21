@@ -1,4 +1,4 @@
-package config
+package bootstrap
 
 import (
 	"log"
@@ -35,6 +35,10 @@ func LoadConfig() *Config {
 	envConfig := loadEnvConfig()
 	postgresConfig := loadPostgresConfig()
 	serverConfig := loadServerConfig()	
+	log := log.New(os.Stdout, "INFO: ", log.Ldate|log.Ltime)
+	log.Printf("Server Port: %s", serverConfig.ServerPort)
+	log.Printf("Postgres Port: %s", postgresConfig.PostgresPort)
+	log.Printf("Env var: %s", envConfig.Env)
 	return &Config {
 		Env: envConfig,
 		Postgres: postgresConfig,
@@ -51,7 +55,6 @@ func loadEnvConfig() *EnvConfig {
 
 	log := log.New(os.Stdout, "INFO: ", log.Ldate|log.Ltime)
 	configPath := os.Getenv("CONFIG_PATH")
-	log.Printf("CONFIG_PATH is %s", configPath)
 	if configPath == "" {
 		log.Fatal("CONFIG_PATH is not set")
 	}
