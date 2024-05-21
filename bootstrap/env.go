@@ -1,7 +1,6 @@
 package config
 
 import (
-	"log/slog"
 	"log"
 	"os"
 	"time"
