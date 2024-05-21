@@ -29,10 +29,7 @@ func InitPostgresDatabase(cfg *Config) *Storage  {
 	CREATE TABLE IF NOT EXISTS "user" (
 		id UUID PRIMARY KEY,
 		username VARCHAR(20) NOT NULL UNIQUE,
-		email VARCHAR(20) NOT NULL UNIQUE,
-		password CHAR(60) NOT NULL UNIQUE,
-		is_verified BOOL NOT NULL DEFAULT false,
-		is_activate BOOL NOT NULL DEFAULT false
+		password CHAR(60) NOT NULL UNIQUE
 	);`)
 	if err != nil {
 		log.Fatalf("%s: %v", op, err)
