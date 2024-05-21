@@ -3,7 +3,6 @@ package config
 import (
 	"log"
 	"os"
-	"time"
 	"github.com/joho/godotenv"
 )
 
