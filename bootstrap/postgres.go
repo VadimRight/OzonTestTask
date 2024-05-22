@@ -7,10 +7,12 @@ import (
 	_ "github.com/lib/pq"
 )
 
+// Тип базы данных
 type Storage struct {
 	db *sql.DB
 }
 
+// Функция инициализации базы данных и подключение к базе данных
 func InitPostgresDatabase(cfg *Config) *Storage  {
 	const op = "postgres.InitPostgresDatabase"
 
@@ -41,6 +43,7 @@ func InitPostgresDatabase(cfg *Config) *Storage  {
 	return &Storage{db: db}
 }
 
+// Функция закрытия соединения с базой данных
 func CloseDB(db *Storage) error {
 	return db.db.Close()
 }
