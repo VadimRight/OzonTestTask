@@ -6,17 +6,20 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// Тип общей конфигурации
 type Config struct {
 	Env *EnvConfig
 	Postgres *PostgresConfig
 	Server *ServerConfig
 }
 
+// Тип конфигурации пути до .env и его типа (local или docker)
 type EnvConfig struct {
 	Env string 
 	EnvPath string
 }
 
+// Тип конфигурации базы данных Postgres
 type PostgresConfig struct {	
 	PostgresPort string 
 	PostgresHost string 
@@ -25,12 +28,14 @@ type PostgresConfig struct {
 	PostgresPassword string 
 }
 
+// Тип конфигурации сервера
 type ServerConfig struct {
 	ServerAddress string 
 	ServerPort string 
 	RunMode string
 }
 
+//  Функция загрузки конфигурации пути к файлу .env и типу .env (локальный или докер)
 func LoadConfig() *Config {
 	envConfig := loadEnvConfig()
 	postgresConfig := loadPostgresConfig()
@@ -46,6 +51,7 @@ func LoadConfig() *Config {
 	}	
 }
 
+// Приватная функция загрузки конфигурации пути к файлу .env и типу .env (локальный или докер)
 func loadEnvConfig() *EnvConfig {
 	const opt = "internal.config.LoadEnvConfig"
 	err := godotenv.Load()
@@ -72,6 +78,7 @@ func loadEnvConfig() *EnvConfig {
 	}
 }
 
+// Приватная функция загрузки конфигурации Postgres базы данных
 func loadPostgresConfig() *PostgresConfig {
 	const opt = "internal.config.LoadPostgresConfig"
 	err := godotenv.Load()
@@ -104,6 +111,7 @@ func loadPostgresConfig() *PostgresConfig {
 	}
 }
 
+// Приватная функция загрузки конфигурации сервера
 func loadServerConfig() *ServerConfig {
 	err := godotenv.Load()
 	const opt = "internal.config.LoadPostgresConfig"
