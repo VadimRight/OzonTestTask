@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"github.com/joho/godotenv"
+	"time"
 )
 
 // Тип общей конфигурации
@@ -32,6 +33,8 @@ type PostgresConfig struct {
 type ServerConfig struct {
 	ServerAddress string 
 	ServerPort string 
+	Timeout           time.Duration 
+	IdleTimeout       time.Duration
 	RunMode string
 }
 
@@ -129,9 +132,22 @@ func loadServerConfig() *ServerConfig {
 	serverRunMode, ok := os.LookupEnv("SERVER_RUN_MODE")
 	if !ok{	log.Fatalf("err while parsing run mode")}
 	
+	timeout, ok := os.LookupEnv("TIMEOUT")
+	if !ok {log.Fatal("Can't read TIMEOUT")}
+	
+	timeoutTime, err := time.ParseDuration(timeout)
+	if err != nil {log.Fatalf("error while parsing timeout")}
+	
+	idleTimeout, ok := os.LookupEnv("IDLE_TIMEOUT")
+	if !ok {log.Fatal("Can't read IDLE_TIMEOUT")}
+	
+	idleTimeoutTime, err := time.ParseDuration(idleTimeout)
+	if err != nil {	log.Fatalf("error while parsing idle time")}
 	return &ServerConfig {
 		ServerAddress: serverAddr, 
 		ServerPort: serverPort,
 		RunMode: serverRunMode,
+		Timeout: timeoutTime, 
+		IdleTimeout: idleTimeoutTime, 	
 	}
 }
