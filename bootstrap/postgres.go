@@ -27,34 +27,38 @@ func InitPostgresDatabase(cfg *Config) *Storage  {
 	if err != nil {
 		log.Fatalf("%s: %v", op, err)
 	}
-	createDatabase, err := db.Prepare(`
+	createUserTable, err := db.Prepare(`
 	CREATE TABLE IF NOT EXISTS "user" (
 		id UUID PRIMARY KEY,
 		username VARCHAR(20) NOT NULL UNIQUE,
 		password CHAR(60) NOT NULL UNIQUE
-	)
-	/
+	);`)
+	if err != nil {	log.Fatalf("%s: %v", op, err) }
+	_, err = createUserTable.Exec()
+	if err != nil {	log.Fatalf("%s: %v", op, err) }
+
+	createPostTable, err := db.Prepare(`
 	CREATE TABLE IF NOT EXISTS post (
 		id UUID PRIMARY KEY,
 		text TEXT NOT NULL,
 		author_id UUID NOT NULL,
-		FOREIGN KEY (author_id) REFERENCES "user"(id)
+		FOREIGN KEY (author_id) REFERENCES "user"(id));
+	`)	
+	if err != nil {	log.Fatalf("%s: %v", op, err) }
+	_, err = createPostTable.Exec()
+	if err != nil {	log.Fatalf("%s: %v", op, err) }
 
-	)
-	/
+	createCommentTable, err := db.Prepare(`
 	CREATE TABLE IF NOT EXISTS comment (
 		id UUID PRIMARY KEY,
 		comment VARCHAR(2000),
 		author_id UUID NOT NULL,
-		FOREIGN KEY (author_id) REFERENCES "user"(id),
+		FOREIGN KEY (author_id) REFERENCES "user"(id)
 	);`)
-	if err != nil {
-		log.Fatalf("%s: %v", op, err)
-	}
-	_, err = createDatabase.Exec()
-	if err != nil {
-		log.Fatalf("%s: %v", op, err)
-	}
+	if err != nil {	log.Fatalf("%s: %v", op, err) }
+	_, err = createCommentTable.Exec()
+	if err != nil {	log.Fatalf("%s: %v", op, err) }
+
 	return &Storage{db: db}
 }
 
